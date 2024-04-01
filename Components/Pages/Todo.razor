@@ -1,0 +1,75 @@
+﻿@page "/todo"
+@using DeploymentApp.Data
+@using Microsoft.Maui.Storage
+@using System.IO
+@using System.Text.Json
+
+<h1>Todo</h1>
+
+<button class="btn btn-primary" @onclick="Load">Load</button>
+<button class="btn btn-success" @onclick="Save">Save</button>
+
+<h2>Completed Todos: @todos.Count(todo => todo.IsComplete)</h2>
+
+<input placeholder="Todo Example" @bind="newTodo"/>
+
+<button class="btn btn-outline-dark" @onclick="AddNewTodo">
+    Add Todo
+</button>
+
+<ul class="list-unstyled">
+
+    @if (todos.Count() == 0) {
+        <p>No Todos</p>
+    } 
+    else 
+    {
+        @foreach (var todo in todos)
+        {
+            <li>
+                <input @bind="todo.IsComplete" type="checkbox" />
+                <input @bind="todo.Title" type="text" />
+            </li>
+        }
+    }
+
+    
+</ul>
+
+@code {
+    private List<TodoItem> todos = new();
+
+    private string? newTodo = "";
+
+    private void AddNewTodo() {
+
+        if (!string.IsNullOrWhiteSpace(newTodo)) 
+        {
+            todos.Add(new TodoItem(newTodo));
+            newTodo = string.Empty;
+        }
+    }
+
+    private void Load()
+    {
+        var path = Path.Combine(FileSystem.AppDataDirectory, "todo.json");
+        var fileExists = File.Exists(path);
+
+        if (!fileExists) return;
+
+        var contents = File.ReadAllText(path);
+        todos = JsonSerializer.Deserialize<List<TodoItem>>(contents);
+    }
+
+    private async Task Save()
+    {
+        var contents = JsonSerializer.Serialize(todos);
+        var path = Path.Combine(FileSystem.AppDataDirectory, "todo.json");
+
+        File.WriteAllText(path, contents);
+
+        await App.Current.MainPage.DisplayAlert("List Saved", $"List has been saved to the {path}", "Ok");
+    }
+}
+
+

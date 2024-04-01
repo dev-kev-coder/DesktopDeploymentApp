@@ -6,11 +6,30 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
+<div>
+    @SomeExpression()
+    @SomeFunction()
+</div>
+
+@* Seems like the code below acts like the components Class *@
 @code {
     private int currentCount = 0;
 
+    [Parameter] // Declares parameters of component
+    public int IncrementAmount { get; set; }
+
     private void IncrementCount()
     {
-        currentCount++;
+        currentCount+= IncrementAmount;
     }
+
+    private string SomeExpression()
+    {
+        return "TEst";
+    }
+}
+
+
+@functions{
+    private string SomeFunction() => "testing";
 }

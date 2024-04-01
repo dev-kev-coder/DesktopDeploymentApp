@@ -1,0 +1,46 @@
+﻿@page "/appConfig"
+@layout Layout.BlankLayout
+@using System.Text.Json
+@using DeploymentApp.Data
+
+<h3>AppConfigSetup</h3>
+
+<button class="btn btn-danger" @onclick="Save">Save App Meta</button>
+<button class="btn btn-warning" @onclick="Load">Load App Meta</button>
+<button class="btn btn-secondary" @onclick="CreateDummyAppMeta">Create App Meta</button>
+
+@if (appConfig != null)
+{
+    <h1>@appConfig.ApplicationBackupFilePath</h1>
+    <h1>@appConfig.SqlServerBackupFilePath</h1>
+}
+
+@code {
+    private AppConfig? appConfig = null;
+
+    private async void Alert(string message)
+    {
+        await App.Current.MainPage.DisplayAlert("AppConfig Saved", message, "Ok");
+    }
+
+    private void Save()
+    {
+        if (appConfig != null) JsonConfig.SaveAsync(appConfig, Alert);
+    }
+
+    private async void Load()
+    {
+        var loadedAppConfig = await JsonConfig.LoadAsync<AppConfig>();
+
+        appConfig = loadedAppConfig;
+    }
+
+    private void CreateDummyAppMeta()
+    {
+        appConfig = new AppConfig()
+        {
+            ApplicationBackupFilePath = "file/Path/1",
+            SqlServerBackupFilePath = "file/Path/2"
+        };
+    }
+}

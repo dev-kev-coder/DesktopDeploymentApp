@@ -1,5 +1,19 @@
 ﻿@page "/"
+@using DeploymentApp.Data
+@inject NavigationManager NavigationManger
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+<Counter IncrementAmount="30"/>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var config = await JsonConfig.LoadAsync<AppConfig>();
+
+        if (config == null) NavigationManger.NavigateTo("/appConfig");
+        else NavigationManger.NavigateTo("/");
+    }
+}
