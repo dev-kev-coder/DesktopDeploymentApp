@@ -4,9 +4,10 @@
   "description": "Deploy is a tool that helps out an IIS Server deployment by replacing directories and files where the server runs on and moves the old items into a backup folder with Date",
   "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "tauri": "tauri"
+    "react-dev": "vite",
+    "react-build": "vite build",
+    "dev": "tauri dev",
+    "build": "tauri build"
   },
   "keywords": [],
   "author": "",
